@@ -1,4 +1,6 @@
-﻿using btgBank.Infrastructure.Persistence;
+﻿using btgBank.Application.Interfaces;
+using btgBank.Infrastructure.Persistence;
+using btgBank.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +16,9 @@ public static class DependencyInjection
 		services.AddDbContext<BtgBankDbContext>(options =>
 			options.UseNpgsql(
 				configuration.GetConnectionString("DefaultConnection")));
+
+		services.AddScoped<IAccountRepository, AccountRepository>();
+		services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 		return services;
 	}
