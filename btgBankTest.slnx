@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/btgBank.Api/btgBank.Api.csproj" />
+    <Project Path="src/btgBank.Application/btgBank.Application.csproj" />
+    <Project Path="src/btgBank.Domain/btgBank.Domain.csproj" />
+    <Project Path="src/btgBank.Infrastructure/btgBank.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Banking.UnitTests/btgBank.UnitTests.csproj" />
+  </Folder>
+</Solution>
