@@ -1,6 +1,8 @@
 using btgBank.Infrastructure;
+using btgBank.Application;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 // Controllers
 builder.Services.AddControllers();
 
