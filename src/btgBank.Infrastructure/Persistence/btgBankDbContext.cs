@@ -1,4 +1,5 @@
 ﻿using btgBank.Domain.Entities;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace btgBank.Infrastructure.Persistence;
@@ -20,5 +21,8 @@ public class BtgBankDbContext : DbContext
 
 		modelBuilder.ApplyConfigurationsFromAssembly(
 			typeof(BtgBankDbContext).Assembly);
+		modelBuilder.AddInboxStateEntity();
+		modelBuilder.AddOutboxMessageEntity();
+		modelBuilder.AddOutboxStateEntity();
 	}
 }
