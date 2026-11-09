@@ -15,10 +15,103 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U btgBank -d btgBankdb"]
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 5s
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    container_name: btgBank-redis
+
+    ports:
+      - "6379:6379"
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:4.3-management
+    container_name: btgBank-rabbitmq
+
+    hostname: rabbitmq
+
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:?Set RABBITMQ_USER in .env}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:?Set RABBITMQ_PASSWORD in .env}
+
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: src/btgBank.Api/Dockerfile
+
+    container_name: btgBank-api
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-btgBankdb};Username=${POSTGRES_USER:-btgBank};Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
+
+      ConnectionStrings__Redis: "redis:6379"
+
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: ${RABBITMQ_USER}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD}
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: src/btgBank.Worker/Dockerfile
+
+    container_name: btgBank-worker
+
+    environment:
+      DOTNET_ENVIRONMENT: Development
+
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-btgBankdb};Username=${POSTGRES_USER:-btgBank};Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
+
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: ${RABBITMQ_USER}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  rabbitmq_data:
