@@ -1,0 +1,25 @@
+# Build
+**/bin/
+**/obj/
+
+# Visual Studio
+.vs/
+.vscode/
+
+# Git
+.git/
+
+# Testes
+**/TestResults/
+**/coverage/
+
+# Arquivos locais
+.env
+.env.*
+!.env.example
+
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+# Documentação
+README.md
