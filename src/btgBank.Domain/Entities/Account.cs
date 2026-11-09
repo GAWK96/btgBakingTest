@@ -1,3 +1,5 @@
+using btgBank.Domain.ValueObjects;
+
 namespace btgBank.Domain.Entities;
 
 public class Account
@@ -9,27 +11,27 @@ public class Account
 
 	public Account(string holderName, string cpf)
 	{
-		ValidateHolderName(holderName);
-		ValidateCpf(cpf);
+		var validatedName = new HolderName(holderName);
+		var validatedCpf = new Cpf(cpf);
 
 		Id = Guid.NewGuid();
-		HolderName = holderName.Trim();
-		Cpf = NormalizeCpf(cpf);
+		HolderName = validatedName.Value;
+		Cpf = validatedCpf.Value;
 		IsActive = true;
 	}
 
 	public void UpdateHolderName(string holderName)
 	{
-		ValidateHolderName(holderName);
+		var validatedName = new HolderName(holderName);
 
-		HolderName = holderName.Trim();
+		HolderName = validatedName.Value;
 	}
 
 	public void Activate()
 	{
 		if (IsActive)
 			throw new InvalidOperationException(
-				"Conta já está ativa!.");
+				"Conta já está ativa!");
 
 		IsActive = true;
 	}
@@ -38,42 +40,8 @@ public class Account
 	{
 		if (!IsActive)
 			throw new InvalidOperationException(
-				"Conta já está inativa!.");
+				"Conta já está inativa!");
 
 		IsActive = false;
-	}
-
-	private static void ValidateHolderName(string holderName)
-	{
-		if (string.IsNullOrWhiteSpace(holderName))
-			throw new ArgumentException(
-				"Nome do titular não pode ser vazio.");
-
-		if (holderName.Trim().Length > 150)
-			throw new ArgumentException(
-				"Nome do titular não pode exceder 150 caracteres.");
-	}
-
-	private static void ValidateCpf(string cpf)
-	{
-		if (string.IsNullOrWhiteSpace(cpf))
-			throw new ArgumentException(
-				"CPF não pode ser vazio.");
-
-		var normalizedCpf = NormalizeCpf(cpf);
-
-		if (normalizedCpf.Length != 11 ||
-			!normalizedCpf.All(char.IsAsciiDigit))
-		{
-			throw new ArgumentException(
-				"CPF deve conter exatamente 11 dígitos.");
-		}
-	}
-
-	private static string NormalizeCpf(string cpf)
-	{
-		return cpf.Replace(".", "")
-				  .Replace("-", "")
-				  .Trim();
 	}
 }
