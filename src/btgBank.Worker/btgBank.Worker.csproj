@@ -1,24 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-btgBank.Worker-c0b0341b-c054-44c0-921f-1bb58e38a44d</UserSecretsId>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>dotnet-btgBank.Worker-c0b0341b-c054-44c0-921f-1bb58e38a44d</UserSecretsId>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.4.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.33" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.33">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MassTransit.RabbitMQ" Version="8.4.1" />
 
-  <ItemGroup>
-    <ProjectReference Include="..\btgBank.Application\btgBank.Application.csproj" />
-  </ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.33" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.33" />
+
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.33">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\btgBank.Application\btgBank.Application.csproj" />
+	</ItemGroup>
+
 </Project>
