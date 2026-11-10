@@ -56,10 +56,8 @@ git clone https://github.com/GAWK96/btgBakingTest.git
 Acesse o diretório:
 
 ```bash
-cd btgBankingTest
+cd btgBakingTest
 ```
-
-Substitua `https://github.com/GAWK96/btgBakingTest.git` pelo endereço do repositório no GitHub.
 
 ## 3. Configurar variáveis de ambiente
 
