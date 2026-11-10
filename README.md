@@ -297,7 +297,7 @@ dotnet test
 
 O projeto possui testes unitários para validar regras de domínio e comportamentos dos serviços da aplicação.
 
-Na última validação realizada durante o desenvolvimento, **59 testes unitários foram executados com sucesso**.
+Na última validação realizada durante o desenvolvimento, **71 testes unitários foram executados com sucesso**.
 
 ## 12. Encerrar a aplicação
 
