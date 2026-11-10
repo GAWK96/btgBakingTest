@@ -957,5 +957,3 @@ Os principais cenários contemplariam:
 Essas melhorias contribuiriam para aumentar a confiabilidade da solução, facilitar o diagnóstico de problemas e oferecer maior segurança durante futuras alterações.
 
 Embora algumas dessas escolhas introduzam complexidade adicional em comparação a um CRUD tradicional, elas permitem explorar padrões relevantes para sistemas distribuídos.
-
-A execução da solução foi validada em um ambiente Docker configurado a partir de um clone limpo do repositório, incluindo a inicialização dos serviços, a aplicação das migrations e a verificação do fluxo de publicação e consumo de eventos.
