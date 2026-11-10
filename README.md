@@ -50,7 +50,7 @@ dotnet tool update --global dotnet-ef --version 8.*
 Clone o projeto:
 
 ```bash
-git clone <URL_DO_REPOSITORIO>
+git clone https://github.com/GAWK96/btgBakingTest.git
 ```
 
 Acesse o diretório:
@@ -59,7 +59,7 @@ Acesse o diretório:
 cd btgBankingTest
 ```
 
-Substitua `<URL_DO_REPOSITORIO>` pelo endereço do repositório no GitHub.
+Substitua `https://github.com/GAWK96/btgBakingTest.git` pelo endereço do repositório no GitHub.
 
 ## 3. Configurar variáveis de ambiente
 
@@ -71,20 +71,6 @@ Crie o arquivo a partir do exemplo disponibilizado no repositório:
 Copy-Item .env.example .env
 ```
 
-Configure as variáveis:
-
-```dotenv
-POSTGRES_USER=btgBank
-POSTGRES_PASSWORD=btgBank
-POSTGRES_DB=btgBankdb
-
-RABBITMQ_USER=btgBank
-RABBITMQ_PASSWORD=btgBank
-```
-
-Esses valores são exemplos destinados exclusivamente ao ambiente de desenvolvimento local.
-
-O arquivo `.env` está incluído no `.gitignore` e não deve ser versionado.
 
 ## 4. Inicializar os serviços de infraestrutura
 
@@ -131,11 +117,9 @@ As migrations devem ser executadas antes da inicialização da API e do Worker.
 No PowerShell, execute:
 
 ```powershell
-$env:ConnectionStrings__DefaultConnection = "Host=localhost;Port=5432;Database=btgBankdb;Username=btgBank;Password=btgBank"
+$env:ConnectionStrings__DefaultConnection = "Host=localhost;Port=5432;Database='POSTGRES_DB';Username='POSTGRES_USER';Password='POSTGRES_PASSWORD'"
 ```
-
-Se você alterou as credenciais no `.env`, ajuste a connection string.
-
+Substitua DATABASE, USERNAME e PASSWORD pelas credenciais encontradas no arquivo env
 ### 5.2 Aplicar as migrations da aplicação
 
 ```powershell
@@ -322,10 +306,6 @@ Para interromper os containers:
 ```bash
 docker compose down
 ```
-
-Esse comando remove os containers e a rede criada pelo Compose, preservando os volumes nomeados.
-
-> **Atenção:** utilizar `docker compose down -v` também remove os volumes gerenciados pelo projeto, podendo excluir os dados persistidos do PostgreSQL. Não utilize essa opção caso deseje preservar os registros.
 
 ---
 
@@ -726,8 +706,6 @@ Entretanto, PostgreSQL foi escolhido por oferecer uma alternativa open source, m
 ---
 
 ## ADR-003 — Redis como mecanismo de cache
-
-**Status:** Accepted
 
 ### Contexto
 
