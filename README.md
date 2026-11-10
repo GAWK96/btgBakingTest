@@ -913,11 +913,48 @@ MassTransit foi escolhido por fornecer abstrações e funcionalidades prontas qu
 
 ---
 
-# 📝 Considerações finais
+# # 📝 Considerações finais
 
 O projeto foi desenvolvido com o objetivo de atender aos requisitos funcionais do desafio técnico e demonstrar a aplicação de conceitos de engenharia de software.
 
 A implementação contempla persistência relacional, separação de responsabilidades, cache distribuído, comunicação assíncrona, Transactional Outbox e controle de idempotência.
+
+Embora algumas dessas escolhas introduzam complexidade adicional em comparação a um CRUD tradicional, elas permitem explorar padrões relevantes para sistemas distribuídos.
+
+A execução da solução foi validada em um ambiente Docker configurado a partir de um clone limpo do repositório, incluindo a inicialização dos serviços, a aplicação das migrations e a verificação do fluxo de publicação e consumo de eventos.
+
+## Possíveis melhorias futuras
+
+Apesar de atender aos requisitos propostos, algumas melhorias poderiam ser incorporadas para aumentar a observabilidade, a confiabilidade e a capacidade de evolução da aplicação.
+
+### 1. Observabilidade com OpenTelemetry
+
+Implementar instrumentação com **OpenTelemetry** na API e no Worker, permitindo coletar métricas e traces distribuídos.
+
+Essa implementação possibilitaria:
+
+- Monitorar o tempo de resposta dos endpoints.
+- Acompanhar o processamento de eventos pelo Worker.
+- Identificar gargalos de desempenho e falhas de comunicação.
+- Correlacionar requisições HTTP com operações de persistência e mensageria.
+- Integrar a telemetria a ferramentas como Jaeger, Prometheus e Grafana.
+
+### 2. Implementação de testes de integração
+
+Expandir a estratégia de testes automatizados por meio da implementação de **testes de integração**, complementando os testes unitários existentes.
+
+Os testes poderiam utilizar **Testcontainers for .NET** para disponibilizar instâncias isoladas de PostgreSQL, Redis e RabbitMQ durante a execução.
+
+Os principais cenários contemplariam:
+
+- Persistência e recuperação de contas no PostgreSQL.
+- Funcionamento do cache e sua invalidação após alterações.
+- Publicação e consumo de eventos pelo RabbitMQ.
+- Funcionamento do Transactional Outbox.
+- Processamento idempotente de mensagens pelo Worker.
+- Comportamento da aplicação diante de falhas temporárias na infraestrutura.
+
+Essas melhorias contribuiriam para aumentar a confiabilidade da solução, facilitar o diagnóstico de problemas e oferecer maior segurança durante futuras alterações.
 
 Embora algumas dessas escolhas introduzam complexidade adicional em comparação a um CRUD tradicional, elas permitem explorar padrões relevantes para sistemas distribuídos.
 
