@@ -2,6 +2,7 @@
 using btgBank.Application.Interfaces;
 using btgBank.Domain.Entities;
 using btgBank.Application.Events;
+using Microsoft.Extensions.Logging;
 namespace btgBank.Application.Services;
 
 public class AccountService : IAccountService
@@ -13,16 +14,19 @@ public class AccountService : IAccountService
 
 	private readonly IEventPublisher _eventPublisher;
 
+	private readonly ILogger<AccountService> _logger;
 	public AccountService(
 		IAccountRepository accountRepository,
 		IUnitOfWork unitOfWork,
 		ICacheService cacheService,
-		IEventPublisher eventPublisher)
+		IEventPublisher eventPublisher,
+		ILogger<AccountService> logger)
 	{
 		_accountRepository = accountRepository;
 		_unitOfWork = unitOfWork;
 		_cacheService = cacheService;
 		_eventPublisher = eventPublisher;
+		_logger = logger;
 	}
 
 	public async Task<AccountResponseDto> CreateAsync(
@@ -52,6 +56,8 @@ public class AccountService : IAccountService
 		await _unitOfWork.SaveChangesAsync(
 			cancellationToken);
 		await _cacheService.RemoveAsync($"allAccounts",cancellationToken);
+		_logger.LogDebug(
+			"Cache invalidation requested for all accounts");
 		return MapToResponse(account);
 	}
 
@@ -125,9 +131,9 @@ public class AccountService : IAccountService
 	}
 
 	public async Task<bool> UpdateAsync(
-		Guid id,
-		UpdateAccountDto dto,
-		CancellationToken cancellationToken = default)
+	Guid id,
+	UpdateAccountDto dto,
+	CancellationToken cancellationToken = default)
 	{
 		var account = await _accountRepository.GetByIdAsync(
 			id,
@@ -142,22 +148,32 @@ public class AccountService : IAccountService
 			account.Activate();
 		else if (!dto.IsActive && account.IsActive)
 			account.Deactivate();
+
 		await _eventPublisher.PublishAsync(
-				new AccountUpdatedEvent(
-					account.Id,
-					account.HolderName,
-					account.IsActive),
-				cancellationToken);
+			new AccountUpdatedEvent(
+				account.Id,
+				account.HolderName,
+				account.IsActive),
+			cancellationToken);
+
 		await _unitOfWork.SaveChangesAsync(
 			cancellationToken);
+
 		await _cacheService.RemoveAsync(
-		    $"account:{id}",		
-		    cancellationToken);
-		Console.WriteLine($"account:{id} removed from cache");
+			$"account:{id}",
+			cancellationToken);
+
+		_logger.LogDebug(
+			"Cache invalidation requested for account {AccountId}",
+			id);
+
 		await _cacheService.RemoveAsync(
-		    $"allAccounts",
-		    cancellationToken);
-		Console.WriteLine($"All accounts removed from cache");
+			"allAccounts",
+			cancellationToken);
+
+		_logger.LogDebug(
+			"Cache invalidation requested for all accounts");
+
 		return true;
 	}
 
@@ -173,22 +189,31 @@ public class AccountService : IAccountService
 			return false;
 
 		_accountRepository.Remove(account);
+
 		await _eventPublisher.PublishAsync(
-				new AccountDeletedEvent(account.Id),
-				cancellationToken);
+			new AccountDeletedEvent(account.Id),
+			cancellationToken);
+
 		await _unitOfWork.SaveChangesAsync(
 			cancellationToken);
+
 		await _cacheService.RemoveAsync(
 			$"account:{id}",
 			cancellationToken);
-		Console.WriteLine($"account:{id} removed from cache");
+
 		await _cacheService.RemoveAsync(
-		    $"allAccounts",
-		    cancellationToken);
-		Console.WriteLine($"All accounts removed from cache");
+			"allAccounts",
+			cancellationToken);
+
+		_logger.LogDebug(
+			"Cache invalidation requested for account {AccountId}",
+			id);
+
+		_logger.LogDebug(
+			"Cache invalidation requested for all accounts");
+
 		return true;
 	}
-
 	private static AccountResponseDto MapToResponse(Account account)
 	{
 		return new AccountResponseDto(
