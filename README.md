@@ -662,8 +662,6 @@ Não foram consideradas alternativas para esse caso, visto que um banco de dados
 
 ## ADR-002 — PostgreSQL como banco de dados principal
 
-**Status:** Accepted
-
 ### Contexto
 
 Após a decisão de utilizar um banco relacional, foi necessário selecionar um SGBD compatível com .NET 8, Entity Framework Core e execução em containers Docker.
