@@ -4,6 +4,7 @@ using btgBank.Application.Events;
 using btgBank.Application.Interfaces;
 using btgBank.Application.Services;
 using btgBank.Domain.Entities;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace btgBank.UnitTests.Application;
@@ -14,7 +15,7 @@ public class AccountServiceTests
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 	private readonly Mock<ICacheService> _cacheMock;
 	private readonly Mock<IEventPublisher> _eventPublisherMock;
-
+	private readonly Mock<ILogger<AccountService>> _loggerMock;
 	private readonly AccountService _service;
 
 	public AccountServiceTests()
@@ -23,17 +24,15 @@ public class AccountServiceTests
 		_unitOfWorkMock = new Mock<IUnitOfWork>();
 		_cacheMock = new Mock<ICacheService>();
 		_eventPublisherMock = new Mock<IEventPublisher>();
+		_loggerMock = new Mock<ILogger<AccountService>>();
 
 		_service = new AccountService(
 			_repositoryMock.Object,
 			_unitOfWorkMock.Object,
 			_cacheMock.Object,
-			_eventPublisherMock.Object);
+			_eventPublisherMock.Object,
+			_loggerMock.Object);
 	}
-
-	// =========================================================
-	// CREATE
-	// =========================================================
 
 	[Fact]
 	public async Task CreateAsync_ShouldCreateAccount_WhenCpfDoesNotExist()
@@ -154,10 +153,6 @@ public class AccountServiceTests
 			Times.Never);
 	}
 
-	// =========================================================
-	// GET BY ID
-	// =========================================================
-
 	[Fact]
 	public async Task GetByIdAsync_ShouldReturnCachedAccount_WhenCacheHit()
 	{
@@ -268,9 +263,7 @@ public class AccountServiceTests
 			Times.Never);
 	}
 
-	// =========================================================
-	// GET ALL
-	// =========================================================
+	//GET ALL
 
 	[Fact]
 	public async Task GetAllAsync_ShouldReturnCachedAccounts_WhenCacheHit()
@@ -363,9 +356,7 @@ public class AccountServiceTests
 		Assert.Empty(result);
 	}
 
-	// =========================================================
-	// UPDATE
-	// =========================================================
+	//UPDATE
 
 	[Fact]
 	public async Task UpdateAsync_ShouldUpdateAccount_WhenAccountExists()
@@ -456,9 +447,7 @@ public class AccountServiceTests
 			Times.Never);
 	}
 
-	// =========================================================
 	// DELETE
-	// =========================================================
 
 	[Fact]
 	public async Task DeleteAsync_ShouldDeleteAccount_WhenAccountExists()
